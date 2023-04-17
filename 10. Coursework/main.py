@@ -37,11 +37,8 @@ class VKPhotosDownloader:
             json.dump(photos_info, f, indent=4)
 
 if __name__ == '__main__':
-    # vk_token = input("Введите токен VK: ")
-    # yandex_token = input("Введите токен Яндекс.Диска: ")
-    # user_id = input("Введите ID пользователя VK: ")
-    vk_token = 'vk1.a.__MNSGbIIEtiLUrAtDIg4f78SCS81uraseVuiJv9dPKs9r7j1m7qZ7r9BHbWpEYts8FTsCTlO7132Ux6FsjDjQjGz33HvUa344qjI70gKE8Xi-pf1h9np2Lh1EoU8kpQt5t_tF3zdZhSO15ghRn3xGVHW7kuSlGubtXbMg9nAH891fGMHXX9La72e8xInDvefk6w3-5n6lpzeLEGlHOAFA'
-    yandex_token = 'y0_AgAAAAASMwflAADLWwAAAADe8DNNEvGLt-jjR3S-FFfMKANUPZ6nw3I'
+    vk_token = input("Введите токен VK: ")
+    yandex_token = input("Введите токен Яндекс.Диска: ")
     user_id = input("Введите ID пользователя VK: ")
     downloader = VKPhotosDownloader(vk_token, yandex_token)
     downloader.download_photos(user_id)
