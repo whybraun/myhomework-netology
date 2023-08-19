@@ -3,7 +3,7 @@
 INSERT INTO Genres (genre_id, genre_name)
 VALUES
   (1, 'Pop'),
-  (3, 'Hip-Hop'),
+  (2, 'Hip-Hop'),
   (3, 'Rock');
 
 INSERT INTO Artists (artist_id, artist_name)
@@ -35,12 +35,10 @@ VALUES
 
 INSERT INTO Tracks (track_id, track_name, duration, album_id)
 VALUES
-  (1, 'Track 1', 240, 1),
-  (2, 'Track 2', 180, 1),
-  (3, 'Track 3', 200, 2),
-  (4, 'Track 4', 220, 2),
-  (5, 'Track 5', 210, 3),
-  (6, 'Track 6', 190, 3);
+  (13, 'my own', 240, 1),
+  (14, 'own my', 180, 1), 
+  (15, 'my', 200, 2),
+  (16, 'oh my god', 220, 2);
 
 INSERT INTO Compilations (compilation_id, compilation_name, release_year)
 VALUES
@@ -78,9 +76,16 @@ SELECT artist_name
 FROM Artists
 WHERE artist_name NOT LIKE '% %';
 
-SELECT track_name, duration
+SELECT  track_name
 FROM Tracks
-WHERE LOWER(track_name) LIKE '%мой%' OR LOWER(track_name) LIKE '%my%';
+WHERE  track_name ILIKE 'my %'
+OR track_name ILIKE '% my'
+OR track_name ILIKE 'my'
+OR track_name ILIKE '% my %'
+
+SELECT  track_name
+FROM Tracks
+WHERE string_to_array(LOWER(track_name), (' ')) && ARRAY['my']
 
 -- #3
 
@@ -99,11 +104,14 @@ FROM Albums a
 INNER JOIN Tracks t ON a.album_id = t.album_id
 GROUP BY a.album_name;
 
-SELECT ar.artist_name
-FROM Artists ar
-LEFT JOIN Artists_Albums aa ON ar.artist_id = aa.artist_id
-LEFT JOIN Albums al ON aa.album_id = al.album_id
-WHERE al.album_id IS NULL OR al.release_year <> 2020;
+SELECT artist_name
+FROM Artists
+WHERE artist_id NOT IN (
+    SELECT artist_id
+    FROM Artists_Albums
+    JOIN Albums ON Artists_Albums.album_id = Albums.album_id
+    WHERE release_year = 2020
+);
 
 SELECT c.compilation_name
 FROM Compilations c
