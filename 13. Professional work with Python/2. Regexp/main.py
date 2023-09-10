@@ -25,18 +25,21 @@ def format_phone(phone):
 def process_contact(contact):
     full_name = ' '.join(contact[:3])
     lastname, firstname, surname = extract_names(full_name)
-    phone = format_phone(contact[5])
-    return lastname, firstname, surname, phone
+    organization = contact[3] if len(contact) > 3 else ""
+    position = contact[4] if len(contact) > 4 else "Не указана"
+    phone = format_phone(contact[5]) if len(contact) > 5 else ""
+    email = contact[6] if len(contact) > 6 else ""
+    return lastname, firstname, surname, organization, position, phone, email
 
 def process_csv(input_filename, output_filename):
     with open(input_filename, encoding='utf-8') as f:
         rows = csv.reader(f, delimiter=",")
         contacts_list = list(rows)
 
-    processed_contacts_list = [['lastname', 'firstname', 'surname', 'phone']]
+    processed_contacts_list = [['lastname', 'firstname', 'surname', 'organization', 'position', 'phone', 'email']]
 
     for contact in contacts_list[1:]:
-        lastname, firstname, surname, phone = process_contact(contact)
+        lastname, firstname, surname, organization, position, phone, email = process_contact(contact)
 
         is_copy = False
         for i, processed_contact in enumerate(processed_contacts_list):
@@ -44,11 +47,13 @@ def process_csv(input_filename, output_filename):
                 is_copy = True
                 if len(surname) > len(processed_contact[2]):
                     processed_contact[2] = surname
-                if len(phone) > len(processed_contact[3]):
-                    processed_contact[3] = phone
+                if len(phone) > len(processed_contact[5]):
+                    processed_contact[5] = phone
+                if position != "Не указана":
+                    processed_contact[4] = position
 
         if not is_copy:
-            processed_contacts_list.append([lastname, firstname, surname, phone])
+            processed_contacts_list.append([lastname, firstname, surname, organization, position, phone, email])
 
     with open(output_filename, 'w', encoding='utf-8', newline='') as f:
         datawriter = csv.writer(f, delimiter=',')
@@ -57,10 +62,11 @@ def process_csv(input_filename, output_filename):
     return processed_contacts_list
 
 if __name__ == "__main__":
-    input_filename = 'myhomework-netology/13. Professional work with Python/2. Regexp/phonebook_raw.csv'
-    output_filename = 'myhomework-netology/13. Professional work with Python/2. Regexp/phonebook.csv'
+    input_filename = 'phonebook_raw.csv'
+    output_filename = 'phonebook.csv'
 
     processed_contacts = process_csv(input_filename, output_filename)
 
     for contact in processed_contacts:
-        print("Фамилия:", contact[0], "Имя:", contact[1], "Отчество:", contact[2], "Телефон:", contact[3])
+        contact_info = f"Фамилия: {contact[0]}, Имя: {contact[1]}, Отчество: {contact[2]}, Организация: {contact[3]}, Должность: {contact[4]}, Телефон: {contact[5]}, Email: {contact[6]}"
+        pprint(contact_info)
